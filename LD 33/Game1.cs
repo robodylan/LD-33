@@ -14,11 +14,17 @@ namespace LD_33
         SpriteBatch spriteBatch;
         List<Entity> entities;
         List<Tile> tiles;
+        List<Button> buttons;
         Texture2D tileTexture;
+        Texture2D failedTexture;
+        Texture2D buttonTexture;
         Vector2 offset;
         Entity player;
         Random rand;
+        SpriteFont font;
+        Button restartButton;
         bool isSprinting;
+        bool playerFailed;
         public Game1()
         {
             player = new Entity(64,64, 32, 32, 63);
@@ -35,14 +41,14 @@ namespace LD_33
             offset = new Vector2((((800 / 16) * 16) / 2) - 32, (((600 / 16) * 16) / 2) - 32);
             tiles = new List<Tile>();
             entities = new List<Entity>();
+            buttons = new List<Button>();
+            restartButton = new Button(10, 10, 100, 100, "Hello World");
+            buttons.Add(restartButton);
             entities.Add(player);
-            for(int i = 0; i < 100; i++)
-            {
-                entities.Add(new Entity(rand.Next(4, 16) * 64, rand.Next(2, 64) * 64, 32, 32, rand.Next(56, 63)));
-            }
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 30.0f);
             //this.IsFixedTimeStep = false;
             graphics.SynchronizeWithVerticalRetrace = false;
+            playerFailed = false;
             graphics.ApplyChanges();
             base.Initialize();
         }
@@ -50,6 +56,9 @@ namespace LD_33
         protected override void LoadContent()
         {
             tileTexture = Content.Load<Texture2D>("tiles");
+            failedTexture = Content.Load<Texture2D>("failed");
+            buttonTexture = Content.Load<Texture2D>("button");
+            font = Content.Load<SpriteFont>("font");
             spriteBatch = new SpriteBatch(GraphicsDevice);
             LoadMap(1);
         }
@@ -68,8 +77,22 @@ namespace LD_33
             if (Keyboard.GetState().IsKeyDown(Keys.S)) { Move(player, Entity.Movement.Back); y = false; }
             if (Keyboard.GetState().IsKeyDown(Keys.A) && y) Move(player, Entity.Movement.Left);
             if (Keyboard.GetState().IsKeyDown(Keys.D) && y) Move(player, Entity.Movement.Right);
+            if (Keyboard.GetState().IsKeyDown(Keys.F)) playerFailed = true;
             isSprinting = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
             base.Update(gameTime);
+
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                foreach (Button button in buttons)
+                {
+                    Vector2 clickPos = Mouse.GetState().Position.ToVector2();
+                    if (clickPos.X > button.x && clickPos.X < button.width && clickPos.Y > button.y && clickPos.Y < button.height)
+                    {
+                        button.clicked = true;
+                    }
+
+                }
+            }
 
             foreach(Entity entity in entities)
             {
@@ -107,6 +130,7 @@ namespace LD_33
             {
                 spriteBatch.Draw(tileTexture, new Vector2(tile.x * 64, tile.y * 64), new Rectangle((tile.ID % (tileTexture.Height / 16)) * 16, tile.ID / (tileTexture.Height / 16) * 16, 16,16), Color.White, 0, new Vector2(0,0), 4, SpriteEffects.None, 0);
             }
+
             foreach (Entity entity in entities)
             {
 
@@ -128,6 +152,24 @@ namespace LD_33
                 }
                 spriteBatch.Draw(tileTexture, new Vector2(entity.x + 16, entity.y + 16), new Rectangle((entity.ID % (tileTexture.Height / 16)) * 16, entity.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, rotation, new Vector2(8, 8), 2f, SpriteEffects.None, 0);
             }
+
+            foreach (Button button in buttons)
+            {
+                if (button.visible)
+                {
+                    Color color = Color.White;
+                    if (button.clicked) color = Color.Red;
+                    spriteBatch.Draw(buttonTexture, new Rectangle((button.x - 10) - (int)offset.X, button.y - (int)offset.Y, button.width, button.height), new Rectangle(0, 0, 16, 16), Color.White); 
+                    spriteBatch.DrawString(font, button.text, new Vector2(button.x - offset.X, button.y - offset.Y), color);
+                }
+            }
+
+            if (playerFailed)
+            {
+                spriteBatch.DrawString(font, "Reason: " + "Target had a heart attack", new Vector2(175 - offset.X, 215 - offset.Y), Color.White);
+                spriteBatch.Draw(failedTexture, new Vector2(175 - offset.X, 128 - offset.Y), null, Color.White, 0, new Vector2(0, 0), 6, SpriteEffects.None, 0);
+            }
+
             spriteBatch.End();
             base.Draw(gameTime);
         }

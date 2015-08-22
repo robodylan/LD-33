@@ -1,7 +1,7 @@
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\obj\x86\Debug\LD 33.exe
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\obj\x86\Debug\LD 33.pdb
-C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\tiles.png
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\Maps\Map1.map
+C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\tiles.png
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\LD 33.exe
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\LD 33.pdb
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\MonoGame.Framework.dll
@@ -24,3 +24,7 @@ C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\SharpDX.Direct2D1.
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\SharpDX.XInput.xml
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\SharpDX.RawInput.xml
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\SharpDX.Direct3D9.xml
+C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\obj\x86\Debug\LD 33.csprojResolveAssemblyReference.cache
+C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\failed.png
+C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\font.xnb
+C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\button.png
