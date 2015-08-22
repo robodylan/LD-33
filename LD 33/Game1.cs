@@ -36,6 +36,10 @@ namespace LD_33
             tiles = new List<Tile>();
             entities = new List<Entity>();
             entities.Add(player);
+            for(int i = 0; i < 100; i++)
+            {
+
+            }
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 30.0f);
             //this.IsFixedTimeStep = false;
             graphics.SynchronizeWithVerticalRetrace = false;
@@ -69,21 +73,25 @@ namespace LD_33
 
             foreach(Entity entity in entities)
             {
-                if(entity != player)
+                if(!entity.Equals(player))
                 {
                     Move(entity, entity.direction);
-                    if(rand.Next(1,10) == 5)
+                    if(rand.Next(1,16) == 5)
                     {
-                        int i = rand(rand.Next(1, 5));
+                        int i = rand.Next(1, 5);
                         switch(i)
                         {
-                            case:
+                            case 1:
+                                entity.direction = Entity.Movement.Back;
                                 break;
-                            case:
+                            case 2:
+                                entity.direction = Entity.Movement.Forward;
                                 break;
-                            case:
+                            case 3:
+                                entity.direction = Entity.Movement.Left;
                                 break;
-                            case:
+                            case 4:
+                                entity.direction = Entity.Movement.Right;
                                 break;
                         }
                     }
@@ -137,7 +145,7 @@ namespace LD_33
                     }
                     entity.direction = Entity.Movement.Forward;
                     entity.y -= speed;
-                    offset.Y += speed;
+                    if (entity.Equals(player)) offset.Y += speed;
                     break;
                 case Entity.Movement.Left:
                     while (willCollide(new Rectangle(entity.x - speed, entity.y, (entity.x - speed) + entity.width, entity.y + entity.height)))
@@ -146,7 +154,7 @@ namespace LD_33
                     }
                     entity.direction = Entity.Movement.Left;
                     entity.x -= speed;
-                    offset.X += speed;
+                    if (entity.Equals(player)) offset.X += speed;
                     break;
                 case Entity.Movement.Back:
                     while (willCollide(new Rectangle(entity.x, entity.y + speed, entity.x + entity.width, (entity.y + speed)+ entity.height)))
@@ -155,7 +163,7 @@ namespace LD_33
                     }
                     entity.direction = Entity.Movement.Back;
                     entity.y += speed;
-                    offset.Y -= speed;
+                    if (entity.Equals(player)) offset.Y -= speed;
                     break;
                 case Entity.Movement.Right:
                     while (willCollide(new Rectangle(entity.x + speed, entity.y, (entity.x + speed) + entity.width, entity.y + entity.height)))
@@ -164,7 +172,7 @@ namespace LD_33
                     }
                     entity.direction = Entity.Movement.Right;
                     entity.x += speed;
-                    offset.X -= speed;
+                    if(entity.Equals(player)) offset.X -= speed;
                     break;
             }
         }
