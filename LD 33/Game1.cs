@@ -17,10 +17,11 @@ namespace LD_33
         Texture2D tileTexture;
         Vector2 offset;
         Entity player;
-
+        Random rand;
+        bool isSprinting;
         public Game1()
         {
-            player = new Entity(0, 0, 64, 64, 1);
+            player = new Entity(64,64, 32, 32, 63);
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = (800 / 16) * 16;
             graphics.PreferredBackBufferHeight = (600 / 16) * 16;
@@ -30,6 +31,7 @@ namespace LD_33
 
         protected override void Initialize()
         {
+            rand = new Random();
             offset = new Vector2((((800 / 16) * 16) / 2) - 32, (((600 / 16) * 16) / 2) - 32);
             tiles = new List<Tile>();
             entities = new List<Entity>();
@@ -57,24 +59,66 @@ namespace LD_33
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            if (Keyboard.GetState().IsKeyDown(Keys.W)) Move(player, Entity.Movement.Forward);
-            if (Keyboard.GetState().IsKeyDown(Keys.A)) Move(player, Entity.Movement.Left);
-            if (Keyboard.GetState().IsKeyDown(Keys.S)) Move(player, Entity.Movement.Back);
-            if (Keyboard.GetState().IsKeyDown(Keys.D)) Move(player, Entity.Movement.Right);
+            bool y = true;
+            if (Keyboard.GetState().IsKeyDown(Keys.W)) { Move(player, Entity.Movement.Forward); y = false; }
+            if (Keyboard.GetState().IsKeyDown(Keys.S)) { Move(player, Entity.Movement.Back); y = false; }
+            if (Keyboard.GetState().IsKeyDown(Keys.A) && y) Move(player, Entity.Movement.Left);
+            if (Keyboard.GetState().IsKeyDown(Keys.D) && y) Move(player, Entity.Movement.Right);
+            isSprinting = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
             base.Update(gameTime);
+
+            foreach(Entity entity in entities)
+            {
+                if(entity != player)
+                {
+                    Move(entity, entity.direction);
+                    if(rand.Next(1,10) == 5)
+                    {
+                        int i = rand(rand.Next(1, 5));
+                        switch(i)
+                        {
+                            case:
+                                break;
+                            case:
+                                break;
+                            case:
+                                break;
+                            case:
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin(SpriteSortMode.Deferred,null,SamplerState.PointClamp,null,null,null,Matrix.CreateTranslation(offset.X, offset.Y, 0));
             foreach (Tile tile in tiles)
             {
-                spriteBatch.Draw(tileTexture, new Vector2(tile.x * 64, tile.y * 64), new Rectangle((tile.ID % tileTexture.Width) * 16,(tile.ID / tileTexture.Width) * 16,16,16), Color.White, 0, new Vector2(0,0), 4, SpriteEffects.None, 0);
+                spriteBatch.Draw(tileTexture, new Vector2(tile.x * 64, tile.y * 64), new Rectangle((tile.ID % (tileTexture.Height / 16)) * 16, tile.ID / (tileTexture.Height / 16) * 16, 16,16), Color.White, 0, new Vector2(0,0), 4, SpriteEffects.None, 0);
             }
             foreach (Entity entity in entities)
             {
-                spriteBatch.Draw(tileTexture, new Vector2(entity.x, entity.y), new Rectangle((entity.ID % tileTexture.Width) * 16, (entity.ID / tileTexture.Width) * 16, 16, 16), Color.White, 0, new Vector2(0, 0), 4, SpriteEffects.None, 0);
+
+                float rotation = 0.00f;
+                switch (entity.direction)
+                {
+                    case Entity.Movement.Forward:
+                        rotation = 1.57079633f * 4;
+                        break;
+                    case Entity.Movement.Left:
+                        rotation = 1.57079633f * 3;
+                        break;
+                    case Entity.Movement.Back:
+                        rotation = 1.57079633f * 2;
+                        break;
+                    case Entity.Movement.Right:
+                        rotation = 1.57079633f * 1;
+                        break;
+                }
+                spriteBatch.Draw(tileTexture, new Vector2(entity.x + 16, entity.y + 16), new Rectangle((entity.ID % (tileTexture.Height / 16)) * 16, entity.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, rotation, new Vector2(8, 8), 2, SpriteEffects.None, 0);
             }
             spriteBatch.End();
             base.Draw(gameTime);
@@ -82,7 +126,8 @@ namespace LD_33
 
         public void Move(Entity entity, Entity.Movement movement)
         {
-            int speed = 5;
+            int speed = 3;
+            if (isSprinting) speed = speed * 2;
             switch(movement)
             {
                 case Entity.Movement.Forward:
@@ -90,6 +135,7 @@ namespace LD_33
                     {
                         speed--;
                     }
+                    entity.direction = Entity.Movement.Forward;
                     entity.y -= speed;
                     offset.Y += speed;
                     break;
@@ -98,6 +144,7 @@ namespace LD_33
                     {
                         speed--;
                     }
+                    entity.direction = Entity.Movement.Left;
                     entity.x -= speed;
                     offset.X += speed;
                     break;
@@ -106,6 +153,7 @@ namespace LD_33
                     {
                         speed--;
                     }
+                    entity.direction = Entity.Movement.Back;
                     entity.y += speed;
                     offset.Y -= speed;
                     break;
@@ -114,6 +162,7 @@ namespace LD_33
                     {
                         speed--;
                     }
+                    entity.direction = Entity.Movement.Right;
                     entity.x += speed;
                     offset.X -= speed;
                     break;
@@ -126,7 +175,7 @@ namespace LD_33
             foreach (Tile tile in tiles)
             {
                 Rectangle B = new Rectangle(tile.x * 64, tile.y * 64,(tile.x * 64) + 64, (tile.y * 64) + 64);
-                if (A.X < B.Width && A.Width > B.X && A.Y < B.Height && A.Height > B.Y)
+                if (A.X < B.Width && A.Width > B.X && A.Y < B.Height && A.Height > B.Y && tile.hasPhysics)
                 {
                     willCollide = true;
                 }
@@ -146,7 +195,7 @@ namespace LD_33
                     int x = Convert.ToInt32(properties[0]);
                     int y = Convert.ToInt32(properties[1]);
                     int ID = Convert.ToInt32(properties[2]);
-                    bool hasPhysics = true;
+                    bool hasPhysics = ID > 15;
                     tiles.Add(new Tile(x, y, ID, hasPhysics));
                 }
                 catch

@@ -13,6 +13,7 @@ namespace LD_33
         public int height { get; set; }
         public int ID { get; set; }
         public enum Movement { Back, Forward, Right, Left}
+        public Movement direction = Movement.Forward;
         public Entity(int x, int y, int width, int height,int ID)
         {
             this.x = x;
