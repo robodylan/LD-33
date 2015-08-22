@@ -24,4 +24,3 @@ C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\SharpDX.Direct2D1.
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\SharpDX.XInput.xml
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\SharpDX.RawInput.xml
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\SharpDX.Direct3D9.xml
-C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\obj\x86\Debug\LD 33.csprojResolveAssemblyReference.cache

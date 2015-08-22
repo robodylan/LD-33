@@ -38,7 +38,7 @@ namespace LD_33
             entities.Add(player);
             for(int i = 0; i < 100; i++)
             {
-
+                entities.Add(new Entity(rand.Next(4, 16) * 64, rand.Next(2, 64) * 64, 32, 32, 63));
             }
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 30.0f);
             //this.IsFixedTimeStep = false;
@@ -102,7 +102,7 @@ namespace LD_33
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.Deferred,null,SamplerState.PointClamp,null,null,null,Matrix.CreateTranslation(offset.X, offset.Y, 0));
+            spriteBatch.Begin(SpriteSortMode.Immediate,null,SamplerState.PointClamp,null,null,null,Matrix.CreateTranslation(offset.X, offset.Y, 0));
             foreach (Tile tile in tiles)
             {
                 spriteBatch.Draw(tileTexture, new Vector2(tile.x * 64, tile.y * 64), new Rectangle((tile.ID % (tileTexture.Height / 16)) * 16, tile.ID / (tileTexture.Height / 16) * 16, 16,16), Color.White, 0, new Vector2(0,0), 4, SpriteEffects.None, 0);
@@ -126,7 +126,7 @@ namespace LD_33
                         rotation = 1.57079633f * 1;
                         break;
                 }
-                spriteBatch.Draw(tileTexture, new Vector2(entity.x + 16, entity.y + 16), new Rectangle((entity.ID % (tileTexture.Height / 16)) * 16, entity.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, rotation, new Vector2(8, 8), 2, SpriteEffects.None, 0);
+                spriteBatch.Draw(tileTexture, new Vector2(entity.x + 16, entity.y + 16), new Rectangle((entity.ID % (tileTexture.Height / 16)) * 16, entity.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, rotation, new Vector2(8, 8), 2f, SpriteEffects.None, 0);
             }
             spriteBatch.End();
             base.Draw(gameTime);
@@ -135,7 +135,7 @@ namespace LD_33
         public void Move(Entity entity, Entity.Movement movement)
         {
             int speed = 3;
-            if (isSprinting) speed = speed * 2;
+            if (isSprinting && entity.Equals(player)) speed = speed * 2;
             switch(movement)
             {
                 case Entity.Movement.Forward:
