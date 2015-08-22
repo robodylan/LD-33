@@ -38,7 +38,7 @@ namespace LD_33
             entities.Add(player);
             for(int i = 0; i < 100; i++)
             {
-                entities.Add(new Entity(rand.Next(4, 16) * 64, rand.Next(2, 64) * 64, 32, 32, 63));
+                entities.Add(new Entity(rand.Next(4, 16) * 64, rand.Next(2, 64) * 64, 32, 32, rand.Next(56, 63)));
             }
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 30.0f);
             //this.IsFixedTimeStep = false;
