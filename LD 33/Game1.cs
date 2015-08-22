@@ -18,6 +18,7 @@ namespace LD_33
         Texture2D tileTexture;
         Texture2D failedTexture;
         Texture2D buttonTexture;
+        Texture2D cursorTexture;
         Vector2 offset;
         Entity player;
         Random rand;
@@ -38,15 +39,13 @@ namespace LD_33
         protected override void Initialize()
         {
             rand = new Random();
-            offset = new Vector2((((800 / 16) * 16) / 2) - 32, (((600 / 16) * 16) / 2) - 32);
             tiles = new List<Tile>();
             entities = new List<Entity>();
             buttons = new List<Button>();
-            restartButton = new Button(10, 10, 100, 100, "Hello World");
+            restartButton = new Button(10, 10,"Hello World");
             buttons.Add(restartButton);
             entities.Add(player);
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 30.0f);
-            //this.IsFixedTimeStep = false;
             graphics.SynchronizeWithVerticalRetrace = false;
             playerFailed = false;
             graphics.ApplyChanges();
@@ -58,6 +57,7 @@ namespace LD_33
             tileTexture = Content.Load<Texture2D>("tiles");
             failedTexture = Content.Load<Texture2D>("failed");
             buttonTexture = Content.Load<Texture2D>("button");
+            cursorTexture = Content.Load<Texture2D>("cursor");
             font = Content.Load<SpriteFont>("font");
             spriteBatch = new SpriteBatch(GraphicsDevice);
             LoadMap(1);
@@ -120,6 +120,12 @@ namespace LD_33
                     }
                 }
             }
+            restartButton.visible = playerFailed;
+            if(restartButton.clicked && playerFailed)
+            {
+                restartButton.clicked = false;
+                restartButton.trans = 0;
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -157,9 +163,15 @@ namespace LD_33
             {
                 if (button.visible)
                 {
+                    if(button.trans < 255 - 10)
+                    {
+                        button.trans += 10;
+                    }
                     Color color = Color.White;
                     if (button.clicked) color = Color.Red;
-                    spriteBatch.Draw(buttonTexture, new Rectangle((button.x - 10) - (int)offset.X, button.y - (int)offset.Y, button.width, button.height), new Rectangle(0, 0, 16, 16), Color.White); 
+                    color.G = (byte)button.trans;
+                    color.B = (byte)button.trans;
+                    spriteBatch.Draw(buttonTexture, new Rectangle((button.x - 11) - (int)offset.X, (button.y - 10) - (int)offset.Y, button.width, button.height), new Rectangle(0, 0, 16, 16), color); 
                     spriteBatch.DrawString(font, button.text, new Vector2(button.x - offset.X, button.y - offset.Y), color);
                 }
             }
@@ -169,7 +181,7 @@ namespace LD_33
                 spriteBatch.DrawString(font, "Reason: " + "Target had a heart attack", new Vector2(175 - offset.X, 215 - offset.Y), Color.White);
                 spriteBatch.Draw(failedTexture, new Vector2(175 - offset.X, 128 - offset.Y), null, Color.White, 0, new Vector2(0, 0), 6, SpriteEffects.None, 0);
             }
-
+            spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -236,7 +248,6 @@ namespace LD_33
         public void LoadMap(int i)
         {
             string[] mapData = File.ReadAllLines("Content/Maps/Map" + i + ".map");
-
             foreach (string blockData in mapData)
             {
                 try
@@ -253,6 +264,16 @@ namespace LD_33
 
                 }
             }
+            entities.Clear();
+            player.x = 64;
+            player.y = 64;
+            offset = new Vector2((((800 / 16) * 16) / 2) - 32, (((600 / 16) * 16) / 2) - 32);
+            entities.Add(player);
+            for (int it = 0; it < 16; it++)
+            {
+                entities.Add(new Entity(rand.Next(2, 16) * 64, rand.Next(2,16) * 64, 32, 32, rand.Next(56, 63)));
+            }
+
         }
     }
 }

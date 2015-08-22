@@ -14,15 +14,17 @@ namespace LD_33
         public bool clicked;
         public string text;
         public bool visible;
-        public Button(int x, int y, int width, int height,string text)
+        public int trans;
+        public Button(int x, int y, string text)
         {
             this.x = x;
             this.y = y;
-            this.width = width;
-            this.height = height;
+            this.width = (int)(text.Length * 13.5f);
+            this.height = 50;
             this.clicked = false;
             this.text = text;
             this.visible = true;
+            this.trans = 255;
         }
     }
 }
