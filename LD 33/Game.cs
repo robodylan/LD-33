@@ -15,10 +15,12 @@ namespace LD_33
         List<Entity> entities;
         List<Tile> tiles;
         List<Button> buttons;
+        List<Slider> sliders;
         Texture2D tileTexture;
         Texture2D failedTexture;
         Texture2D buttonTexture;
         Texture2D cursorTexture;
+        Texture2D sliderTexture;
         Vector2 offset;
         Entity player;
         Random rand;
@@ -26,7 +28,7 @@ namespace LD_33
         Button restartButton;
         Button increaseFright;
         Button decreaseFright;
-        int frightness;
+        Slider frightness;
         bool isSprinting;
         bool playerFailed;
         public Game()
@@ -45,12 +47,15 @@ namespace LD_33
             tiles = new List<Tile>();
             entities = new List<Entity>();
             buttons = new List<Button>();
+            sliders = new List<Slider>();
+            frightness = new Slider(0,0,50);
             restartButton = new Button(450, 275, "Restart");
             increaseFright = new Button(100,400,"Increase");
             decreaseFright = new Button(100,450,"Decrease");
             buttons.Add(restartButton);
             buttons.Add(increaseFright);
             buttons.Add(decreaseFright);
+            sliders.Add(frightness);
             entities.Add(player);
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 30.0f);
             graphics.SynchronizeWithVerticalRetrace = false;
@@ -65,6 +70,7 @@ namespace LD_33
             failedTexture = Content.Load<Texture2D>("failed");
             buttonTexture = Content.Load<Texture2D>("button");
             cursorTexture = Content.Load<Texture2D>("cursor");
+            sliderTexture = Content.Load<Texture2D>("slider");
             font = Content.Load<SpriteFont>("font");
             spriteBatch = new SpriteBatch(GraphicsDevice);
             LoadMap(1);
@@ -94,7 +100,7 @@ namespace LD_33
                 foreach (Button button in buttons)
                 {
                     Vector2 clickPos = Mouse.GetState().Position.ToVector2();
-                    if (clickPos.X > button.x && clickPos.X < (button.width + button.x) && clickPos.Y > button.y && clickPos.Y < (button.height + button.y))
+                    if (clickPos.X > button.x && clickPos.X < (button.width + button.x) && clickPos.Y > button.y && clickPos.Y < (button.height + button.y) && button.visible)
                     {
                         button.clicked = true;
                     }
@@ -198,6 +204,13 @@ namespace LD_33
                 spriteBatch.DrawString(font, "Reason: " + "Target had a heart attack", new Vector2(175 - offset.X, 215 - offset.Y), Color.White);
                 spriteBatch.Draw(failedTexture, new Vector2(175 - offset.X, 128 - offset.Y), null, Color.White, 0, new Vector2(0, 0), 6, SpriteEffects.None, 0);
             }
+
+            foreach (Slider slider in sliders)
+            {
+                spriteBatch.Draw(buttonTexture, new Rectangle(slider.x - (int)offset.X,slider.y - (int)offset.Y, 100, 25), new Rectangle(0, 0,16,16), Color.White, 0, new Vector2(0,0), SpriteEffects.None, 0);
+                spriteBatch.Draw(sliderTexture, new Rectangle((slider.x + 6) - (int)offset.X, (slider.y + 2) - (int)offset.Y, (int)(88f * (slider.percentFull / 100f)), 21), new Rectangle(0, 0, 16, 16), Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
+            }
+
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
