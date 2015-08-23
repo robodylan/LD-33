@@ -34,9 +34,11 @@ namespace LD_33
         Slider frightness;
         Target target;
         int points;
+        int bestScore;
         bool showInstructions;
         bool isSprinting;
         bool playerFailed;
+        bool firstLoad;
         string reasonForFailure;
         string instructions;
         public Game()
@@ -72,7 +74,7 @@ namespace LD_33
             restartButton = new Button(450, 275, "Restart");
             increaseFright = new Button(160, 550, "Increase");
             decreaseFright = new Button(31, 550, "Decrease");
-            instructionsButton = new Button(0,0, "Play");
+            instructionsButton = new Button(260, 325, "Play ");
             buttons.Add(restartButton);
             buttons.Add(increaseFright);
             buttons.Add(decreaseFright);
@@ -84,6 +86,8 @@ namespace LD_33
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 30.0f);
             graphics.SynchronizeWithVerticalRetrace = false;
             playerFailed = false;
+            showInstructions = true;
+            firstLoad = true;
             reasonForFailure = "NULL: ERROR CODE 34";
             graphics.ApplyChanges();
             base.Initialize();
@@ -100,7 +104,6 @@ namespace LD_33
             font = Content.Load<SpriteFont>("font");
             fontSmall = Content.Load<SpriteFont>("fontSm");
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            LoadMap(1);
         }
 
         protected override void UnloadContent()
@@ -110,6 +113,12 @@ namespace LD_33
 
         protected override void Update(GameTime gameTime)
         {
+            if(!showInstructions && firstLoad)
+            {
+                firstLoad = false;
+                LoadMap(1);
+                instructionsButton.visible = false;
+            }
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             bool y = true;
@@ -188,7 +197,11 @@ namespace LD_33
             }
             if (decreaseFright.clicked && frightness.percentFull > 10) frightness.percentFull -= 10;
             if (increaseFright.clicked && frightness.percentFull < 100) frightness.percentFull += 10;
-            if (restartButton.clicked) LoadMap(1);            
+            if (restartButton.clicked) LoadMap(1);         
+            if (instructionsButton.clicked)
+            {
+                showInstructions = false;
+            }   
         }
 
         protected override void Draw(GameTime gameTime)
@@ -225,7 +238,7 @@ namespace LD_33
                         rotation = 1.57079633f * 1;
                         break;
                 }
-                spriteBatch.Draw(tileTexture, new Vector2(entity.x + 16, entity.y + 16), new Rectangle((entity.ID % (tileTexture.Height / 16)) * 16, entity.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, rotation, new Vector2(8, 8), 2f, SpriteEffects.None, 0);
+                if(!firstLoad) spriteBatch.Draw(tileTexture, new Vector2(entity.x + 16, entity.y + 16), new Rectangle((entity.ID % (tileTexture.Height / 16)) * 16, entity.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, rotation, new Vector2(8, 8), 2f, SpriteEffects.None, 0);
             }
 
             spriteBatch.Draw(overlayTexture, new Vector2(0 - offset.X, 0 - offset.Y), new Color(Color.White, 0.5f));
@@ -263,7 +276,7 @@ namespace LD_33
             spriteBatch.DrawString(font, "Scariness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
             spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc + "\nPayment: $" + target.worth, new Vector2(15 - offset.X, 15 - offset.Y), Color.LightGreen);
             spriteBatch.DrawString(font, "Cash: $" + points, new Vector2(600 - offset.X, 32 - offset.Y), Color.DarkGreen);
-            spriteBatch.DrawString(font, instructions, new Vector2(0 - offset.X, 0 - offset.Y), Color.DarkGreen);
+            if (showInstructions) spriteBatch.DrawString(font, instructions, new Vector2(15 - offset.X, 100 - offset.Y), Color.Red);
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
@@ -355,6 +368,7 @@ namespace LD_33
 
         public void LoadMap(int i)
         {
+            if (points > bestScore) bestScore = points;
             points = 0;
             playerFailed = false;
             string[] mapData = File.ReadAllLines("Content/Maps/Map" + i + ".map");
