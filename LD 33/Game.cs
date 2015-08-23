@@ -31,6 +31,7 @@ namespace LD_33
         Slider frightness;
         bool isSprinting;
         bool playerFailed;
+        string reasonForFailure;
         public Game()
         {
             player = new Entity(64, 64, 32, 32, 63);
@@ -48,10 +49,10 @@ namespace LD_33
             entities = new List<Entity>();
             buttons = new List<Button>();
             sliders = new List<Slider>();
-            frightness = new Slider(0,0,50);
+            frightness = new Slider(20, 515, 100);
             restartButton = new Button(450, 275, "Restart");
-            increaseFright = new Button(100,400,"Increase");
-            decreaseFright = new Button(100,450,"Decrease");
+            increaseFright = new Button(160, 550, "Increase");
+            decreaseFright = new Button(31, 550, "Decrease");
             buttons.Add(restartButton);
             buttons.Add(increaseFright);
             buttons.Add(decreaseFright);
@@ -88,10 +89,13 @@ namespace LD_33
             bool y = true;
 
             if (Keyboard.GetState().IsKeyDown(Keys.F)) playerFailed = true;
-            if (Keyboard.GetState().IsKeyDown(Keys.W)) { Move(player, Entity.Movement.Forward); y = false; }
-            if (Keyboard.GetState().IsKeyDown(Keys.S)) { Move(player, Entity.Movement.Back); y = false; }
-            if (Keyboard.GetState().IsKeyDown(Keys.A) && y) Move(player, Entity.Movement.Left);
-            if (Keyboard.GetState().IsKeyDown(Keys.D) && y) Move(player, Entity.Movement.Right);
+            if (!playerFailed)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.W)) { Move(player, Entity.Movement.Forward); y = false; }
+                if (Keyboard.GetState().IsKeyDown(Keys.S)) { Move(player, Entity.Movement.Back); y = false; }
+                if (Keyboard.GetState().IsKeyDown(Keys.A) && y) Move(player, Entity.Movement.Left);
+                if (Keyboard.GetState().IsKeyDown(Keys.D) && y) Move(player, Entity.Movement.Right);
+            }
             isSprinting = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
             base.Update(gameTime);
 
@@ -148,6 +152,8 @@ namespace LD_33
             {
                 if (button.clicked) button.trans = 0;
             }
+            if (decreaseFright.clicked && frightness.percentFull > 0) frightness.percentFull -= 10;
+            if (increaseFright.clicked && frightness.percentFull < 100) frightness.percentFull += 10;
             if (restartButton.clicked) LoadMap(1);
         }
 
@@ -194,7 +200,7 @@ namespace LD_33
                     if (button.clicked) color = Color.Red;
                     color.G = (byte)button.trans;
                     color.B = (byte)button.trans;
-                    spriteBatch.Draw(buttonTexture, new Rectangle((button.x - 11) - (int)offset.X, (button.y - 10) - (int)offset.Y, button.width, button.height), new Rectangle(0, 0, 16, 16), color);
+                    spriteBatch.Draw(buttonTexture, new Rectangle((button.x - 11) - (int)offset.X, (button.y) - (int)offset.Y, button.width, button.height), new Rectangle(0, 0, 16, 16), color);
                     spriteBatch.DrawString(font, button.text, new Vector2(button.x - offset.X, button.y - offset.Y), color);
                 }
             }
@@ -207,10 +213,11 @@ namespace LD_33
 
             foreach (Slider slider in sliders)
             {
-                spriteBatch.Draw(buttonTexture, new Rectangle(slider.x - (int)offset.X,slider.y - (int)offset.Y, 100, 25), new Rectangle(0, 0,16,16), Color.White, 0, new Vector2(0,0), SpriteEffects.None, 0);
-                spriteBatch.Draw(sliderTexture, new Rectangle((slider.x + 6) - (int)offset.X, (slider.y + 2) - (int)offset.Y, (int)(88f * (slider.percentFull / 100f)), 21), new Rectangle(0, 0, 16, 16), Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
+                spriteBatch.Draw(buttonTexture, new Rectangle(slider.x - (int)offset.X,slider.y - (int)offset.Y, 200, 25), new Rectangle(0, 0,16,16), Color.White, 0, new Vector2(0,0), SpriteEffects.None, 0);
+                spriteBatch.Draw(sliderTexture, new Rectangle((slider.x + 6) - (int)offset.X, (slider.y + 2) - (int)offset.Y, (int)(181f * (slider.percentFull / 100f)), 21), new Rectangle(0, 0, 16, 16), Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
+                spriteBatch.DrawString(font,slider.percentFull + "%", new Vector2((slider.x + 203) - offset.X, (slider.y) - offset.Y), Color.White);
             }
-
+            spriteBatch.DrawString(font, "Scaryness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);

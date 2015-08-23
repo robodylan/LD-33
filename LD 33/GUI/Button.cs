@@ -20,7 +20,7 @@ namespace LD_33
             this.x = x;
             this.y = y;
             this.width = (int)(text.Length * 15f);
-            this.height = 50;
+            this.height = 30;
             this.clicked = false;
             this.text = text;
             this.visible = true;
