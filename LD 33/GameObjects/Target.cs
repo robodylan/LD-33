@@ -26,7 +26,7 @@ namespace LD_33
             rand = new Random();
             this.age = rand.Next(6, 99);
             this.isMale = rand.Next(0, 2) == 1;
-            this.fear = ((100 - age) / 10);
+            this.fear = 10 - (Math.Abs(50 - age) / 10) * 2;
             if (this.isMale) fear--; 
             this.ID = 48 + rand.Next(0, 3);
             this.desc = descList[ID - 48];

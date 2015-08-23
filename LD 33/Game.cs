@@ -94,6 +94,7 @@ namespace LD_33
 
         protected override void Update(GameTime gameTime)
         {
+            Console.WriteLine(target.fear);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             bool y = true;
@@ -135,6 +136,14 @@ namespace LD_33
             {
                 if (!entity.Equals(player))
                 {
+                    if(entity.ID == 56)
+                    {
+                        if(Math.Sqrt(Math.Pow((player.x + 16) - (entity.x + 16), 2) + Math.Pow((player.y + 16) - (entity.y + 16), 2)) < 64)
+                        {
+                            playerFailed = true;
+                            reasonForFailure = "Caught by the police";
+                        }
+                    }
                     Move(entity, entity.direction);
                     if (rand.Next(1, 64) == 5)
                     {
