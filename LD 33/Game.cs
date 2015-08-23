@@ -64,6 +64,7 @@ namespace LD_33
             sliders.Add(frightness);
             entities.Add(target);
             entities.Add(player);
+            offset = new Vector2((((800 / 16) * 16) / 2) - 32, (((600 / 16) * 16) / 2) - 32);
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 30.0f);
             graphics.SynchronizeWithVerticalRetrace = false;
             playerFailed = false;
@@ -100,6 +101,7 @@ namespace LD_33
             if (Keyboard.GetState().IsKeyDown(Keys.F)) playerFailed = true;
             if (!playerFailed)
             {
+                if (Keyboard.GetState().IsKeyDown(Keys.E)) Scare();
                 if (Keyboard.GetState().IsKeyDown(Keys.W)) { Move(player, Entity.Movement.Forward); y = false; }
                 if (Keyboard.GetState().IsKeyDown(Keys.S)) { Move(player, Entity.Movement.Back); y = false; }
                 if (Keyboard.GetState().IsKeyDown(Keys.A) && y) Move(player, Entity.Movement.Left);
@@ -134,7 +136,7 @@ namespace LD_33
                 if (!entity.Equals(player))
                 {
                     Move(entity, entity.direction);
-                    if (rand.Next(1, 16) == 5)
+                    if (rand.Next(1, 64) == 5)
                     {
                         int i = rand.Next(1, 5);
                         switch (i)
@@ -240,11 +242,13 @@ namespace LD_33
         {
             int speed = 3;
             if (isSprinting && entity.Equals(player)) speed = speed * 2;
+            bool collidided = false;
             switch (movement)
             {
                 case Entity.Movement.Forward:
                     while (willCollide(new Rectangle(entity.x, entity.y - speed, entity.x + entity.width, (entity.y - speed) + entity.height)))
                     {
+                        collidided = true;
                         speed--;
                     }
                     entity.direction = Entity.Movement.Forward;
@@ -254,6 +258,7 @@ namespace LD_33
                 case Entity.Movement.Left:
                     while (willCollide(new Rectangle(entity.x - speed, entity.y, (entity.x - speed) + entity.width, entity.y + entity.height)))
                     {
+                        collidided = true;
                         speed--;
                     }
                     entity.direction = Entity.Movement.Left;
@@ -263,6 +268,7 @@ namespace LD_33
                 case Entity.Movement.Back:
                     while (willCollide(new Rectangle(entity.x, entity.y + speed, entity.x + entity.width, (entity.y + speed) + entity.height)))
                     {
+                        collidided = true;
                         speed--;
                     }
                     entity.direction = Entity.Movement.Back;
@@ -272,12 +278,32 @@ namespace LD_33
                 case Entity.Movement.Right:
                     while (willCollide(new Rectangle(entity.x + speed, entity.y, (entity.x + speed) + entity.width, entity.y + entity.height)))
                     {
+                        collidided = true;
                         speed--;
                     }
                     entity.direction = Entity.Movement.Right;
                     entity.x += speed;
                     if (entity.Equals(player)) offset.X -= speed;
                     break;
+            }
+            if(collidided && !entity.Equals(player))
+            {
+                int i = rand.Next(1, 5);
+                switch (i)
+                {
+                    case 1:
+                        entity.direction = Entity.Movement.Back;
+                        break;
+                    case 2:
+                        entity.direction = Entity.Movement.Forward;
+                        break;
+                    case 3:
+                        entity.direction = Entity.Movement.Left;
+                        break;
+                    case 4:
+                        entity.direction = Entity.Movement.Right;
+                        break;
+                }
             }
         }
 
@@ -316,15 +342,25 @@ namespace LD_33
                 }
             }
             entities.Clear();
+            target = new Target(rand.Next(2, 15) * 64, rand.Next(2, 14) * 64);
+            entities.Add(player);
             player.x = 64;
             player.y = 64;
-            target = new Target(rand.Next(2, 16) * 64, rand.Next(2, 16) * 64);
-            offset = new Vector2((((800 / 16) * 16) / 2) - 32, (((600 / 16) * 16) / 2) - 32);
-            entities.Add(player);
+            offset = new Vector2((((800 / 16) * 16) / 2) - 64, (((600 / 16) * 16) / 2) - 64);
             entities.Add(target);
-            for (int it = 0; it < 16; it++)
+            for (int it = 0; it < 32; it++)
             {
-                entities.Add(new Entity(rand.Next(2, 16) * 64, rand.Next(2, 16) * 64, 32, 32, rand.Next(56, 63)));
+                entities.Add(new Entity(rand.Next(2, 15) * 64, rand.Next(2, 14) * 64, 32, 32, rand.Next(56, 63)));
+            }
+        }
+
+        public void Scare()
+        {
+            if (Math.Sqrt(Math.Pow(player.x - target.x, 2) + Math.Pow(player.y - target.y, 2)) < 64)
+            {
+                entities.Remove(target);
+                target = new Target(rand.Next(2, 15) * 64, rand.Next(2, 14) * 64);
+                entities.Add(target);
             }
         }
     }
