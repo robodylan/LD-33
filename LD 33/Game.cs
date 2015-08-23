@@ -21,6 +21,7 @@ namespace LD_33
         Texture2D buttonTexture;
         Texture2D cursorTexture;
         Texture2D sliderTexture;
+        Texture2D overlayTexture;
         Random rand;
         Vector2 offset;
         Entity player;
@@ -77,6 +78,7 @@ namespace LD_33
             buttonTexture = Content.Load<Texture2D>("button");
             cursorTexture = Content.Load<Texture2D>("cursor");
             sliderTexture = Content.Load<Texture2D>("slider");
+            overlayTexture = Content.Load<Texture2D>("overlay");
             font = Content.Load<SpriteFont>("font");
             spriteBatch = new SpriteBatch(GraphicsDevice);
             LoadMap(1);
@@ -193,6 +195,8 @@ namespace LD_33
                 spriteBatch.Draw(tileTexture, new Vector2(entity.x + 16, entity.y + 16), new Rectangle((entity.ID % (tileTexture.Height / 16)) * 16, entity.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, rotation, new Vector2(8, 8), 2f, SpriteEffects.None, 0);
             }
 
+            spriteBatch.Draw(overlayTexture, new Vector2(0 - offset.X, 0 - offset.Y), new Color(Color.White, 0.5f));
+
             foreach (Button button in buttons)
             {
                 if (button.visible)
@@ -205,6 +209,7 @@ namespace LD_33
                     if (button.clicked) color = Color.Red;
                     color.G = (byte)button.trans;
                     color.B = (byte)button.trans;
+                    color.A = 128;
                     spriteBatch.Draw(buttonTexture, new Rectangle((button.x - 11) - (int)offset.X, (button.y) - (int)offset.Y, button.width, button.height), new Rectangle(0, 0, 16, 16), color);
                     spriteBatch.DrawString(font, button.text, new Vector2(button.x - offset.X, button.y - offset.Y), color);
                 }
@@ -219,7 +224,7 @@ namespace LD_33
             foreach (Slider slider in sliders)
             {
                 spriteBatch.Draw(buttonTexture, new Rectangle(slider.x - (int)offset.X,slider.y - (int)offset.Y, 200, 25), new Rectangle(0, 0,16,16), Color.White, 0, new Vector2(0,0), SpriteEffects.None, 0);
-                spriteBatch.Draw(sliderTexture, new Rectangle((slider.x + 6) - (int)offset.X, (slider.y + 2) - (int)offset.Y, (int)(181f * (slider.percentFull / 100f)), 21), new Rectangle(0, 0, 16, 16), Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
+                spriteBatch.Draw(sliderTexture, new Rectangle((slider.x + 10) - (int)offset.X, (slider.y + 2) - (int)offset.Y, (int)(181f * (slider.percentFull / 100f)), 21), new Rectangle(0, 0, 16, 16), Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
                 spriteBatch.DrawString(font,slider.percentFull + "%", new Vector2((slider.x + 203) - offset.X, (slider.y) - offset.Y), Color.White);
             }
             spriteBatch.DrawString(font, "Scaryness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
