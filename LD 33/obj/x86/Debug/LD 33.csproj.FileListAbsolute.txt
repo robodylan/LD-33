@@ -28,4 +28,4 @@ C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\obj\x86\Debug\LD 33.csprojResolveAss
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\failed.png
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\font.xnb
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\button.png
-C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\cursor.bmp
+C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\cursor.png
