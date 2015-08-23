@@ -16,6 +16,7 @@ namespace LD_33
         List<Tile> tiles;
         List<Button> buttons;
         List<Slider> sliders;
+        List<Notification> notifications;
         Texture2D tileTexture;
         Texture2D failedTexture;
         Texture2D buttonTexture;
@@ -51,15 +52,16 @@ namespace LD_33
             graphics.PreferredBackBufferHeight = (600 / 16) * 16;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
-            instructions = "    You are a contract scarer, similiar to contract killer, you scare people\n" +
-                           "for money. You must adjust your scariness for each target or else you may\n" +
-                           "scare them too much or not enough, adjust your scariness levels at the\n" + 
-                           "bottom left. The amount needed to scare them depends on thier age and gender:\n" +
-                           "women, children, and the eldery scare more easily. By the way you are wanted\n" +
-                           "by the police so make sure to watch out for them. You are given information\n" +
-                           "about each target which appears in the upper right hand corner. The controls\n" +
-                           "are very simple, W,A,S,D for movement and E to scare once you are near you're\n" +
-                           "target. Good Luck :)";
+            instructions = "    You are a contract scarer, similiar to a contract killer, you scare people\n" +
+                           "for money. You must adjust your scariness for each target or else you\n" +
+                           "may scare them too much or not enough, adjust your scariness\n" +
+                           "levels at the bottom left. The amount needed to scare them depends on \n" +
+                           "thier age and gender: women, children, and the eldery scare more easily. \n" +
+                           "By the way you are wanted by the police so make sure to watch out for\n" +
+                           "them. You are given information about each target which appears\n" +
+                           "in the upper right hand corner. The controls are very simple: W,A,S,D\n" +
+                           "for movement and E to scare once you are near you're target.\n" +
+                           "Good Luck :)";
 
         }
 
@@ -70,11 +72,12 @@ namespace LD_33
             entities = new List<Entity>();
             buttons = new List<Button>();
             sliders = new List<Slider>();
+
             frightness = new Slider(20, 515, 50);
             restartButton = new Button(450, 275, "Restart");
             increaseFright = new Button(160, 550, "Increase");
             decreaseFright = new Button(31, 550, "Decrease");
-            instructionsButton = new Button(260, 325, "Play ");
+            instructionsButton = new Button(180, 355, "Play ");
             buttons.Add(restartButton);
             buttons.Add(increaseFright);
             buttons.Add(decreaseFright);
@@ -113,6 +116,7 @@ namespace LD_33
 
         protected override void Update(GameTime gameTime)
         {
+            foreach(Notification notification in notifications)
             if(!showInstructions && firstLoad)
             {
                 firstLoad = false;
@@ -195,8 +199,8 @@ namespace LD_33
             {
                 if (button.clicked) button.trans = 0;
             }
-            if (decreaseFright.clicked && frightness.percentFull > 10) frightness.percentFull -= 10;
-            if (increaseFright.clicked && frightness.percentFull < 100) frightness.percentFull += 10;
+            if (decreaseFright.clicked && frightness.percentFull > 10) frightness.percentFull -= 5;
+            if (increaseFright.clicked && frightness.percentFull < 100) frightness.percentFull += 5;
             if (restartButton.clicked) LoadMap(1);         
             if (instructionsButton.clicked)
             {
@@ -216,7 +220,7 @@ namespace LD_33
             spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(offset.X + shake.X, offset.Y + shake.Y, 0));
             foreach (Tile tile in tiles)
             {
-                spriteBatch.Draw(tileTexture, new Vector2(tile.x * 64, tile.y * 64), new Rectangle((tile.ID % (tileTexture.Height / 16)) * 16, tile.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, 0, new Vector2(0, 0), 4, SpriteEffects.None, 0);
+                if (!firstLoad) spriteBatch.Draw(tileTexture, new Vector2(tile.x * 64, tile.y * 64), new Rectangle((tile.ID % (tileTexture.Height / 16)) * 16, tile.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, 0, new Vector2(0, 0), 4, SpriteEffects.None, 0);
             }
 
             foreach (Entity entity in entities)
@@ -241,7 +245,7 @@ namespace LD_33
                 if(!firstLoad) spriteBatch.Draw(tileTexture, new Vector2(entity.x + 16, entity.y + 16), new Rectangle((entity.ID % (tileTexture.Height / 16)) * 16, entity.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, rotation, new Vector2(8, 8), 2f, SpriteEffects.None, 0);
             }
 
-            spriteBatch.Draw(overlayTexture, new Vector2(0 - offset.X, 0 - offset.Y), new Color(Color.White, 0.5f));
+            if (!firstLoad) spriteBatch.Draw(overlayTexture, new Vector2(0 - offset.X, 0 - offset.Y), new Color(Color.White, 0.5f));
 
             foreach (Button button in buttons)
             {
@@ -263,8 +267,8 @@ namespace LD_33
 
             if (playerFailed)
             {
-                spriteBatch.DrawString(font, "Reason: " + reasonForFailure, new Vector2(175 - offset.X, 215 - offset.Y), Color.White);
-                spriteBatch.Draw(failedTexture, new Vector2(175 - offset.X, 128 - offset.Y), null, Color.White, 0, new Vector2(0, 0), 6, SpriteEffects.None, 0);
+                if (!firstLoad) spriteBatch.DrawString(font, "Reason: " + reasonForFailure, new Vector2(175 - offset.X, 215 - offset.Y), Color.White);
+                if (!firstLoad) spriteBatch.Draw(failedTexture, new Vector2(175 - offset.X, 128 - offset.Y), null, Color.White, 0, new Vector2(0, 0), 6, SpriteEffects.None, 0);
             }
 
             foreach (Slider slider in sliders)
@@ -274,8 +278,8 @@ namespace LD_33
                 spriteBatch.DrawString(font,slider.percentFull + "%", new Vector2((slider.x + 203) - offset.X, (slider.y) - offset.Y), Color.White);
             }
             spriteBatch.DrawString(font, "Scariness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
-            spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc + "\nPayment: $" + target.worth, new Vector2(15 - offset.X, 15 - offset.Y), Color.LightGreen);
-            spriteBatch.DrawString(font, "Cash: $" + points, new Vector2(600 - offset.X, 32 - offset.Y), Color.DarkGreen);
+            if (!firstLoad) spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc + "\nPayment: $" + target.worth, new Vector2(15 - offset.X, 15 - offset.Y), Color.LightGreen);
+            if (!firstLoad) spriteBatch.DrawString(font, "        Cash: $" + points + "\nBest Score: $" + bestScore, new Vector2(550 - offset.X, 32 - offset.Y), Color.DarkGreen);
             if (showInstructions) spriteBatch.DrawString(font, instructions, new Vector2(15 - offset.X, 100 - offset.Y), Color.Red);
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
