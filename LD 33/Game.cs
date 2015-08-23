@@ -55,7 +55,7 @@ namespace LD_33
             entities = new List<Entity>();
             buttons = new List<Button>();
             sliders = new List<Slider>();
-            frightness = new Slider(20, 515, 100);
+            frightness = new Slider(20, 515, 50);
             restartButton = new Button(450, 275, "Restart");
             increaseFright = new Button(160, 550, "Increase");
             decreaseFright = new Button(31, 550, "Decrease");
@@ -95,7 +95,6 @@ namespace LD_33
 
         protected override void Update(GameTime gameTime)
         {
-            Console.WriteLine(target.fear);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             bool y = true;
@@ -121,7 +120,6 @@ namespace LD_33
                     {
                         button.clicked = true;
                     }
-
                 }
             }
 
@@ -139,7 +137,7 @@ namespace LD_33
                 {
                     if(entity.ID == 56)
                     {
-                        if(Math.Sqrt(Math.Pow((player.x + 16) - (entity.x + 16), 2) + Math.Pow((player.y + 16) - (entity.y + 16), 2)) < 64)
+                        if(Math.Sqrt(Math.Pow((player.x + 16) - (entity.x + 16), 2) + Math.Pow((player.y + 16) - (entity.y + 16), 2)) < 64 && !playerFailed)
                         {
                             playerFailed = true;
                             reasonForFailure = "Caught by the police";
@@ -242,7 +240,8 @@ namespace LD_33
                 spriteBatch.DrawString(font,slider.percentFull + "%", new Vector2((slider.x + 203) - offset.X, (slider.y) - offset.Y), Color.White);
             }
             spriteBatch.DrawString(font, "Scariness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
-            spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc + "\nPayment: $" + target.worth, new Vector2(15 - offset.X, 15 - offset.Y), Color.WhiteSmoke);
+            spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc + "\nPayment: $" + target.worth, new Vector2(15 - offset.X, 15 - offset.Y), Color.LightGreen);
+            spriteBatch.DrawString(font, "Cash: $" + points, new Vector2(600 - offset.X, 32 - offset.Y), Color.DarkGreen);
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
@@ -370,9 +369,6 @@ namespace LD_33
         {
             if (Math.Sqrt(Math.Pow(player.x - target.x, 2) + Math.Pow(player.y - target.y, 2)) < 64)
             {
-                entities.Remove(target);
-                target = new Target(rand.Next(2, 15) * 64, rand.Next(2, 14) * 64);
-                entities.Add(target);
                 if (Math.Abs((frightness.percentFull / 10) - target.fear) > 2)
                 {
                     playerFailed = true;
@@ -385,7 +381,11 @@ namespace LD_33
                         reasonForFailure = "Too Scary! Target had a heart attack";
                     }
                 }
+
                 if (!playerFailed) points += target.worth;
+                entities.Remove(target);
+                target = new Target(rand.Next(2, 15) * 64, rand.Next(2, 14) * 64);
+                entities.Add(target);
             }
         }
     }
