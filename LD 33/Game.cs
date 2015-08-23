@@ -30,9 +30,11 @@ namespace LD_33
         Button restartButton;
         Button increaseFright;
         Button decreaseFright;
+        Button instructionsButton;
         Slider frightness;
         Target target;
         int points;
+        bool showInstructions;
         bool isSprinting;
         bool playerFailed;
         string reasonForFailure;
@@ -59,9 +61,11 @@ namespace LD_33
             restartButton = new Button(450, 275, "Restart");
             increaseFright = new Button(160, 550, "Increase");
             decreaseFright = new Button(31, 550, "Decrease");
+            instructionsButton = new Button(0,0, "Play");
             buttons.Add(restartButton);
             buttons.Add(increaseFright);
             buttons.Add(decreaseFright);
+            buttons.Add(instructionsButton);
             sliders.Add(frightness);
             entities.Add(target);
             entities.Add(player);
@@ -173,13 +177,19 @@ namespace LD_33
             }
             if (decreaseFright.clicked && frightness.percentFull > 10) frightness.percentFull -= 10;
             if (increaseFright.clicked && frightness.percentFull < 100) frightness.percentFull += 10;
-            if (restartButton.clicked) LoadMap(1);
+            if (restartButton.clicked) LoadMap(1);            
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(offset.X, offset.Y, 0));
+            Vector2 shake = new Vector2(0,0);
+            if (playerFailed)
+            {
+                shake.X += rand.Next(-2, 3);
+                shake.Y += rand.Next(-2, 3);
+            }
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(offset.X + shake.X, offset.Y + shake.Y, 0));
             foreach (Tile tile in tiles)
             {
                 spriteBatch.Draw(tileTexture, new Vector2(tile.x * 64, tile.y * 64), new Rectangle((tile.ID % (tileTexture.Height / 16)) * 16, tile.ID / (tileTexture.Height / 16) * 16, 16, 16), Color.White, 0, new Vector2(0, 0), 4, SpriteEffects.None, 0);
@@ -242,6 +252,7 @@ namespace LD_33
             spriteBatch.DrawString(font, "Scariness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
             spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc + "\nPayment: $" + target.worth, new Vector2(15 - offset.X, 15 - offset.Y), Color.LightGreen);
             spriteBatch.DrawString(font, "Cash: $" + points, new Vector2(600 - offset.X, 32 - offset.Y), Color.DarkGreen);
+            spriteBatch.DrawString(font, "Instructions /n" + points, new Vector2(0 - offset.X, 0 - offset.Y), Color.DarkGreen);
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
