@@ -26,6 +26,7 @@ namespace LD_33
         Vector2 offset;
         Entity player;
         SpriteFont font;
+        SpriteFont fontSmall;
         Button restartButton;
         Button increaseFright;
         Button decreaseFright;
@@ -80,6 +81,7 @@ namespace LD_33
             sliderTexture = Content.Load<Texture2D>("slider");
             overlayTexture = Content.Load<Texture2D>("overlay");
             font = Content.Load<SpriteFont>("font");
+            fontSmall = Content.Load<SpriteFont>("fontSm");
             spriteBatch = new SpriteBatch(GraphicsDevice);
             LoadMap(1);
         }
@@ -159,7 +161,7 @@ namespace LD_33
             {
                 if (button.clicked) button.trans = 0;
             }
-            if (decreaseFright.clicked && frightness.percentFull > 0) frightness.percentFull -= 10;
+            if (decreaseFright.clicked && frightness.percentFull > 10) frightness.percentFull -= 10;
             if (increaseFright.clicked && frightness.percentFull < 100) frightness.percentFull += 10;
             if (restartButton.clicked) LoadMap(1);
         }
@@ -228,6 +230,7 @@ namespace LD_33
                 spriteBatch.DrawString(font,slider.percentFull + "%", new Vector2((slider.x + 203) - offset.X, (slider.y) - offset.Y), Color.White);
             }
             spriteBatch.DrawString(font, "Scaryness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
+            spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc, new Vector2(15 - offset.X, 15 - offset.Y), Color.WhiteSmoke);
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);

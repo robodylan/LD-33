@@ -86,7 +86,7 @@
     <None Include="Content\font.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\FontSm.xnb">
+    <None Include="Content\fontSm.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Maps\Map1.map">
