@@ -29,12 +29,15 @@ namespace LD_33
         Button increaseFright;
         Button decreaseFright;
         Slider frightness;
+        Target target;
         bool isSprinting;
         bool playerFailed;
         string reasonForFailure;
         public Game()
         {
             player = new Entity(64, 64, 32, 32, 63);
+            target = new Target(64, 64);
+            target.ID = 46;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = (800 / 16) * 16;
             graphics.PreferredBackBufferHeight = (600 / 16) * 16;
@@ -57,10 +60,12 @@ namespace LD_33
             buttons.Add(increaseFright);
             buttons.Add(decreaseFright);
             sliders.Add(frightness);
+            entities.Add(target);
             entities.Add(player);
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0f / 30.0f);
             graphics.SynchronizeWithVerticalRetrace = false;
             playerFailed = false;
+            reasonForFailure = "NULL: ERROR CODE 34";
             graphics.ApplyChanges();
             base.Initialize();
         }
@@ -207,7 +212,7 @@ namespace LD_33
 
             if (playerFailed)
             {
-                spriteBatch.DrawString(font, "Reason: " + "Target had a heart attack", new Vector2(175 - offset.X, 215 - offset.Y), Color.White);
+                spriteBatch.DrawString(font, "Reason: " + reasonForFailure, new Vector2(175 - offset.X, 215 - offset.Y), Color.White);
                 spriteBatch.Draw(failedTexture, new Vector2(175 - offset.X, 128 - offset.Y), null, Color.White, 0, new Vector2(0, 0), 6, SpriteEffects.None, 0);
             }
 
@@ -305,8 +310,10 @@ namespace LD_33
             entities.Clear();
             player.x = 64;
             player.y = 64;
+            target = new Target(rand.Next(2, 16) * 64, rand.Next(2, 16) * 64);
             offset = new Vector2((((800 / 16) * 16) / 2) - 32, (((600 / 16) * 16) / 2) - 32);
             entities.Add(player);
+            entities.Add(target);
             for (int it = 0; it < 16; it++)
             {
                 entities.Add(new Entity(rand.Next(2, 16) * 64, rand.Next(2, 16) * 64, 32, 32, rand.Next(56, 63)));

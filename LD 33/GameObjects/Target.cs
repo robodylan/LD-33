@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LD_33.GameObjects
+namespace LD_33
 {
-    public abstract class Target : Entity
+    public class Target : Entity
     {
         int age;
         int fear;
@@ -13,8 +13,8 @@ namespace LD_33.GameObjects
         bool isMale;
         Random rand;
         string[] maleNames = {"Ben","Sam","John","Tim","Will","James","Thomas","David","Richard", "George", "Daniel", "Michael", "Charles", "Paul", "Edward", "Brian", "Steven", "Kevin", "Jason", "Anthony" };
-        string[] femalenames = { "Mary", "Patricia", "Linda", "Barbara", "Elizabeth", "Jennifer", "Susan", "Maria", "Margaret", "Michelle", "Donna", "Carol", "Ruth", "Sharon", "Sarah", "Deborah", "Kim", "Karen" };
-        public Target(int x, int y) :  base(x,y,10,10,10)
+        string[] femaleNames = { "Mary", "Patricia", "Linda", "Barbara", "Elizabeth", "Jennifer", "Susan", "Maria", "Margaret", "Michelle", "Donna", "Carol", "Ruth", "Sharon", "Sarah", "Deborah", "Kim", "Karen" };
+        public Target(int x, int y) :  base(x,y,32,32,63)
         {
             this.x = x;
             this.y = y;
@@ -26,11 +26,11 @@ namespace LD_33.GameObjects
             this.fear = rand.Next();
             if(this.isMale)
             {
-                this.name = maleNames[rand.Next(0, maleNames.Length)];
+                this.name = maleNames[rand.Next(0, maleNames.Length )];
             }
             else
             {
-                this.name = femalenames[rand.Next(0, maleNames.Length)];
+                this.name = femaleNames[rand.Next(0, femaleNames.Length)];
             }
         }
 
