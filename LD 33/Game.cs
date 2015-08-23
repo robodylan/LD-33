@@ -32,6 +32,7 @@ namespace LD_33
         Button decreaseFright;
         Slider frightness;
         Target target;
+        int points;
         bool isSprinting;
         bool playerFailed;
         string reasonForFailure;
@@ -240,8 +241,8 @@ namespace LD_33
                 spriteBatch.Draw(sliderTexture, new Rectangle((slider.x + 10) - (int)offset.X, (slider.y + 2) - (int)offset.Y, (int)(181f * (slider.percentFull / 100f)), 21), new Rectangle(0, 0, 16, 16), Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
                 spriteBatch.DrawString(font,slider.percentFull + "%", new Vector2((slider.x + 203) - offset.X, (slider.y) - offset.Y), Color.White);
             }
-            spriteBatch.DrawString(font, "Scaryness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
-            spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc, new Vector2(15 - offset.X, 15 - offset.Y), Color.WhiteSmoke);
+            spriteBatch.DrawString(font, "Scariness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
+            spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc + "\nPayment: $" + target.worth, new Vector2(15 - offset.X, 15 - offset.Y), Color.WhiteSmoke);
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
@@ -250,6 +251,7 @@ namespace LD_33
         public void Move(Entity entity, Entity.Movement movement)
         {
             int speed = 3;
+            if(entity.ID == 56) speed = 5;
             if (isSprinting && entity.Equals(player)) speed = speed * 2;
             bool collidided = false;
             switch (movement)
@@ -332,6 +334,7 @@ namespace LD_33
 
         public void LoadMap(int i)
         {
+            points = 0;
             playerFailed = false;
             string[] mapData = File.ReadAllLines("Content/Maps/Map" + i + ".map");
             foreach (string blockData in mapData)
@@ -382,6 +385,7 @@ namespace LD_33
                         reasonForFailure = "Too Scary! Target had a heart attack";
                     }
                 }
+                if (!playerFailed) points += target.worth;
             }
         }
     }
