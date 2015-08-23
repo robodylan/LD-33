@@ -361,6 +361,18 @@ namespace LD_33
                 entities.Remove(target);
                 target = new Target(rand.Next(2, 15) * 64, rand.Next(2, 14) * 64);
                 entities.Add(target);
+                if (Math.Abs((frightness.percentFull / 10) - target.fear) > 2)
+                {
+                    playerFailed = true;
+                    if ((frightness.percentFull / 10) < target.fear)
+                    {
+                        reasonForFailure = "Not Scary Enough! Target was unnerved";
+                    }
+                    else
+                    {
+                        reasonForFailure = "Too Scary! Target had a heart attack";
+                    }
+                }
             }
         }
     }
