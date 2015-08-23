@@ -41,6 +41,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GameObjects\Target.cs" />
     <Compile Include="GUI\Button.cs" />
     <Compile Include="GameObjects\Entity.cs" />
     <Compile Include="Game.cs" />
@@ -80,6 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\font.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\FontSm.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\Maps\Map1.map">

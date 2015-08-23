@@ -7,11 +7,11 @@ namespace LD_33
 {
     public class Entity
     {
-        public int x { get; set; }
-        public int y { get; set; }
-        public int width { get; set; }
-        public int height { get; set; }
-        public int ID { get; set; }
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+        public int ID;
         public enum Movement { Back, Forward, Right, Left}
         public Movement direction = Movement.Forward;
         public Entity(int x, int y, int width, int height,int ID)

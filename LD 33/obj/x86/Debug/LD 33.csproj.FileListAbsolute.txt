@@ -30,3 +30,4 @@ C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\font.xnb
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\button.png
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\cursor.png
 C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\slider.png
+C:\Users\Dylan\Documents\GitHub\LD-33\LD 33\bin\Windows\Debug\Content\FontSm.xnb

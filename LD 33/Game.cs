@@ -21,9 +21,9 @@ namespace LD_33
         Texture2D buttonTexture;
         Texture2D cursorTexture;
         Texture2D sliderTexture;
+        Random rand;
         Vector2 offset;
         Entity player;
-        Random rand;
         SpriteFont font;
         Button restartButton;
         Button increaseFright;
