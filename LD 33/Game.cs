@@ -38,6 +38,7 @@ namespace LD_33
         bool isSprinting;
         bool playerFailed;
         string reasonForFailure;
+        string instructions;
         public Game()
         {
             player = new Entity(64, 64, 32, 32, 63);
@@ -48,6 +49,16 @@ namespace LD_33
             graphics.PreferredBackBufferHeight = (600 / 16) * 16;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
+            instructions = "    You are a contract scarer, similiar to contract killer, you scare people\n" +
+                           "for money. You must adjust your scariness for each target or else you may\n" +
+                           "scare them too much or not enough, adjust your scariness levels at the\n" + 
+                           "bottom left. The amount needed to scare them depends on thier age and gender:\n" +
+                           "women, children, and the eldery scare more easily. By the way you are wanted\n" +
+                           "by the police so make sure to watch out for them. You are given information\n" +
+                           "about each target which appears in the upper right hand corner. The controls\n" +
+                           "are very simple, W,A,S,D for movement and E to scare once you are near you're\n" +
+                           "target. Good Luck :)";
+
         }
 
         protected override void Initialize()
@@ -252,7 +263,7 @@ namespace LD_33
             spriteBatch.DrawString(font, "Scariness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
             spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc + "\nPayment: $" + target.worth, new Vector2(15 - offset.X, 15 - offset.Y), Color.LightGreen);
             spriteBatch.DrawString(font, "Cash: $" + points, new Vector2(600 - offset.X, 32 - offset.Y), Color.DarkGreen);
-            spriteBatch.DrawString(font, "Instructions /n" + points, new Vector2(0 - offset.X, 0 - offset.Y), Color.DarkGreen);
+            spriteBatch.DrawString(font, instructions, new Vector2(0 - offset.X, 0 - offset.Y), Color.DarkGreen);
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
