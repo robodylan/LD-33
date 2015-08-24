@@ -44,7 +44,7 @@ namespace LD_33
         string instructions;
         public Game()
         {
-            player = new Entity(64, 64, 32, 32, 63);
+            player = new Entity(64 * 3, 64 * 16, 32, 32, 63);
             target = new Target(64, 64);
             target.ID = 46;
             graphics = new GraphicsDeviceManager(this);
@@ -118,7 +118,8 @@ namespace LD_33
         {
             foreach(Notification notification in notifications)
             {
-                if(notification.trans > 1) notification.trans--;
+                if(notification.trans > 5) notification.trans -= 5;
+                notification.y--;
             }
             if(!showInstructions && firstLoad)
             {
@@ -133,7 +134,6 @@ namespace LD_33
             if (Keyboard.GetState().IsKeyDown(Keys.F)) playerFailed = true;
             if (!playerFailed)
             {
-                notifications.Add(new Notification(rand.Next(0, 800), rand.Next(0, 600), "+100"));
                 if (Keyboard.GetState().IsKeyDown(Keys.E)) Scare();
                 if (Keyboard.GetState().IsKeyDown(Keys.W)) { Move(player, Entity.Movement.Forward); y = false; }
                 if (Keyboard.GetState().IsKeyDown(Keys.S)) { Move(player, Entity.Movement.Back); y = false; }
@@ -269,11 +269,6 @@ namespace LD_33
                 }
             }
 
-            foreach (Notification notification in notifications)
-            {
-                spriteBatch.DrawString(font, notification.text, new Vector2(notification.x - offset.X, notification.y - offset.Y), new Color(Color.White,notification.trans / 255f));
-            }
-
             if (playerFailed)
             {
                 if (!firstLoad) spriteBatch.DrawString(font, "Reason: " + reasonForFailure, new Vector2(175 - offset.X, 215 - offset.Y), Color.White);
@@ -289,6 +284,15 @@ namespace LD_33
             spriteBatch.DrawString(font, "Scariness", new Vector2(18 - offset.X, 475 - offset.Y), Color.White);
             if (!firstLoad) spriteBatch.DrawString(fontSmall, "Name: " + target.name + "\nAge: " + target.age + "\nDescription: " + target.desc + "\nPayment: $" + target.worth, new Vector2(15 - offset.X, 15 - offset.Y), Color.LightGreen);
             if (!firstLoad) spriteBatch.DrawString(font, "        Cash: $" + points + "\nBest Score: $" + bestScore, new Vector2(550 - offset.X, 32 - offset.Y), Color.DarkGreen);
+
+            foreach (Notification notification in notifications)
+            {
+                Color color = new Color(255, 255, 255);
+                color.R = (byte)notification.trans;
+                color.G = (byte)notification.trans;
+                color.B = (byte)notification.trans;
+                spriteBatch.DrawString(font, notification.text, new Vector2(notification.x - offset.X, notification.y - offset.Y), color);
+            }
             if (showInstructions) spriteBatch.DrawString(font, instructions, new Vector2(15 - offset.X, 100 - offset.Y), Color.Red);
             spriteBatch.Draw(cursorTexture, Mouse.GetState().Position.ToVector2() - offset, Color.White);
             spriteBatch.End();
@@ -404,9 +408,9 @@ namespace LD_33
             entities.Clear();
             target = new Target(rand.Next(2, 15) * 64, rand.Next(2, 14) * 64);
             entities.Add(player);
-            player.x = 64;
-            player.y = 64;
-            offset = new Vector2((((800 / 16) * 16) / 2) - 64, (((600 / 16) * 16) / 2) - 64);
+            player.x = 64 * 3;
+            player.y = 64 * 4;
+            offset = new Vector2((((800 / 16) * 16) / 2) - (64 * 3), (((600 / 16) * 16) / 2) - (64 * 4));
             entities.Add(target);
             for (int it = 0; it < 32; it++)
             {
@@ -431,7 +435,11 @@ namespace LD_33
                     }
                 }
 
-                if (!playerFailed) points += target.worth;
+                if (!playerFailed)
+                {
+                    notifications.Add(new Notification(rand.Next(0, 800), rand.Next(0, 600), "+100"));
+                    points += target.worth;
+                }
                 entities.Remove(target);
                 target = new Target(rand.Next(2, 15) * 64, rand.Next(2, 14) * 64);
                 entities.Add(target);
