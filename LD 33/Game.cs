@@ -72,7 +72,7 @@ namespace LD_33
             entities = new List<Entity>();
             buttons = new List<Button>();
             sliders = new List<Slider>();
-
+            notifications = new List<Notification>();
             frightness = new Slider(20, 515, 50);
             restartButton = new Button(450, 275, "Restart");
             increaseFright = new Button(160, 550, "Increase");
@@ -117,6 +117,9 @@ namespace LD_33
         protected override void Update(GameTime gameTime)
         {
             foreach(Notification notification in notifications)
+            {
+                if(notification.trans > 1) notification.trans--;
+            }
             if(!showInstructions && firstLoad)
             {
                 firstLoad = false;
@@ -130,6 +133,7 @@ namespace LD_33
             if (Keyboard.GetState().IsKeyDown(Keys.F)) playerFailed = true;
             if (!playerFailed)
             {
+                notifications.Add(new Notification(rand.Next(0, 800), rand.Next(0, 600), "+100"));
                 if (Keyboard.GetState().IsKeyDown(Keys.E)) Scare();
                 if (Keyboard.GetState().IsKeyDown(Keys.W)) { Move(player, Entity.Movement.Forward); y = false; }
                 if (Keyboard.GetState().IsKeyDown(Keys.S)) { Move(player, Entity.Movement.Back); y = false; }
@@ -263,6 +267,11 @@ namespace LD_33
                     spriteBatch.Draw(buttonTexture, new Rectangle((button.x - 11) - (int)offset.X, (button.y) - (int)offset.Y, button.width, button.height), new Rectangle(0, 0, 16, 16), color);
                     spriteBatch.DrawString(font, button.text, new Vector2(button.x - offset.X, button.y - offset.Y), color);
                 }
+            }
+
+            foreach (Notification notification in notifications)
+            {
+                spriteBatch.DrawString(font, notification.text, new Vector2(notification.x - offset.X, notification.y - offset.Y), new Color(Color.White,notification.trans / 255f));
             }
 
             if (playerFailed)

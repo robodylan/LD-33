@@ -7,10 +7,10 @@ namespace LD_33
 {
     class Notification
     {
-        int x;
-        int y;
-        int trans;
-        string text;
+        public int x;
+        public int y;
+        public int trans;
+        public string text;
         public Notification(int x, int y, string text)
         {
             this.x = x;
