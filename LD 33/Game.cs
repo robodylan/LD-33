@@ -437,7 +437,7 @@ namespace LD_33
 
                 if (!playerFailed)
                 {
-                    notifications.Add(new Notification(rand.Next(0, 800), rand.Next(0, 600), "+100"));
+                    notifications.Add(new Notification(target.x, target.y, "+" + target.worth));
                     points += target.worth;
                 }
                 entities.Remove(target);
